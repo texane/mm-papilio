@@ -1,0 +1,7 @@
+milkymist papilio port
+
+tdc core cloned from git://ohwr.org/hdl-core-lib/tdc-core.git
+commit 60aaf965932b64551c70cd1aeccd8fa972d477ff
+
+toolchain downloadable at ftp://rtems.org/pub/rtems/linux/4.11/fedora/15/i386
+extract and install all the packages matching *lm32*
