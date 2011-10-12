@@ -1,6 +1,16 @@
 # ==== Clock input ====
-NET "clkin" TNM_NET = CLK_125MHZ;
-TIMESPEC TS_CLK_125MHZ = PERIOD CLK_125MHZ 8 ns;
+# NET "clkin" TNM_NET = CLK_30;
+# TIMESPEC TS_CLK_30 = PERIOD CLK_30 31 ns;
 
-NET "tdc/cmp_tdc/cmp_channelbank/g_channels[0].cmp_channel/muxed_signal" TIG;
-NET "tdc/cmp_tdc/cmp_channelbank/g_channels[1].cmp_channel/muxed_signal" TIG;
+NET "clkin" LOC = "P89" | IOSTANDARD = LVCMOS25 | PERIOD = 31.00ns ;
+
+NET "uart_rxd"  LOC = "P88" | IOSTANDARD = LVTTL ;
+NET "uart_txd"  LOC = "P90" | IOSTANDARD = LVTTL | DRIVE = 8 | SLEW = FAST ;
+
+# Wing1 Column A
+NET "resetin" LOC = "P18" | IOSTANDARD = LVCMOS33 | SLEW = FAST | PULLDOWN | DRIVE = 8 ;	#A0
+NET "btn<0>" LOC = "P23" | IOSTANDARD = LVCMOS33 | SLEW = FAST | DRIVE = 8 ;  	#A1
+NET "btn<1>" LOC = "P26" | IOSTANDARD = LVCMOS33 | SLEW = FAST | DRIVE = 8 ;  	#A2
+NET "btn<2>" LOC = "P33" | IOSTANDARD = LVCMOS33 | SLEW = FAST | DRIVE = 8 ;  	#A3
+NET "led<0>" LOC = "P35" | IOSTANDARD = LVCMOS33 | SLEW = FAST | DRIVE = 8 ;  	#A4
+NET "led<1>" LOC = "P40" | IOSTANDARD = LVCMOS33 | SLEW = FAST | DRIVE = 8 ;  	#A5

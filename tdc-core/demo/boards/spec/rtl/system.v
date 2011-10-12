@@ -28,11 +28,7 @@ module system(
 
 	// GPIO
 	input [2:0] btn,
-	output [1:0] led,
-	
-	// TDC
-	input [1:0] tdc_signal,
-	input [1:0] tdc_calib
+	output [1:0] led
 );
 
 //------------------------------------------------------------------
@@ -102,8 +98,7 @@ wire		cpuibus_ack,
 wire [31:0]	brg_adr,
 		bram_adr,
 		sram_adr,
-		csrbrg_adr,
-		tdc_adr;
+		csrbrg_adr;
 
 wire [2:0]	brg_cti,
 		bram_cti,
@@ -113,32 +108,25 @@ wire [31:0]	bram_dat_r,
 		sram_dat_r,
 		sram_dat_w,
 		csrbrg_dat_r,
-		csrbrg_dat_w,
-		tdc_dat_r,
-		tdc_dat_w;
+		csrbrg_dat_w;
 
 wire [3:0]	bram_sel,
-		sram_sel,
-		tdc_sel;
+		sram_sel;
 
 wire		csrbrg_we,
-		sram_we,
-		tdc_we;
+		sram_we;
 
 wire		bram_cyc,
 		sram_cyc,
-		csrbrg_cyc,
-		tdc_cyc;
+		csrbrg_cyc;
 
 wire		bram_stb,
 		sram_stb,
-		csrbrg_stb,
-		tdc_stb;
+		csrbrg_stb;
 
 wire		bram_ack,
 		sram_ack,
-		csrbrg_ack,
-		tdc_ack;
+		csrbrg_ack;
 
 //---------------------------------------------------------------------------
 // Wishbone switch
@@ -150,7 +138,7 @@ conbus #(
 	.s2_addr(3'b010),	// sram		0x40000000
 	.s3_addr(3'b100),	// CSR bridge	0x80000000
 	.s4_addr(3'b101),	// TDC		0xa0000000
-	.s5_addr(3'b110),	// free		0xc0000000
+	.s5_addr(3'b110)	// free		0xc0000000
 ) conbus (
 	.sys_clk(sys_clk),
 	.sys_rst(sys_rst),
@@ -250,15 +238,6 @@ conbus #(
 	.s3_cyc_o(csrbrg_cyc),
 	.s3_stb_o(csrbrg_stb),
 	.s3_ack_i(csrbrg_ack),
-	// Slave 4
-	.s4_dat_i(tdc_dat_r),
-	.s4_dat_o(tdc_dat_w),
-	.s4_adr_o(tdc_adr),
-	.s4_we_o(tdc_we),
-	.s4_cyc_o(tdc_cyc),
-	.s4_stb_o(tdc_stb),
-	.s4_sel_o(tdc_sel),
-	.s4_ack_i(tdc_ack),
 	// Slave 5
 	.s5_dat_i(32'bx),
 	.s5_adr_o(),
@@ -309,11 +288,9 @@ wire timer0_irq;
 wire timer1_irq;
 wire uartrx_irq;
 wire uarttx_irq;
-wire tdc_irq;
 
 wire [31:0] cpu_interrupt;
-assign cpu_interrupt = {26'd0,
-	tdc_irq,
+assign cpu_interrupt = {27'd0,
 	uarttx_irq,
 	uartrx_irq,
 	timer1_irq,
@@ -445,38 +422,6 @@ sysctl #(
 	.gpio_outputs(led),
 
 	.hard_reset(hard_reset)
-);
-
-//---------------------------------------------------------------------------
-// TDC
-//---------------------------------------------------------------------------
-tdc_hostif #(
-	.g_CHANNEL_COUNT(2),
-	.g_CARRY4_COUNT(100),
-	.g_RAW_COUNT(9),
-	.g_FP_COUNT(13),
-	.g_COARSE_COUNT(25),
-	.g_RO_LENGTH(20),
-	.g_FCOUNTER_WIDTH(13),
-	.g_FTIMER_WIDTH(10)
-) tdc (
-	.rst_n_i(~sys_rst),
-	.wb_clk_i(sys_clk),
-
-	.wb_addr_i(tdc_adr[5:0]),
-	.wb_data_i(tdc_dat_w),
-	.wb_data_o(tdc_dat_r),
-	.wb_cyc_i(tdc_cyc),
-	.wb_sel_i(tdc_sel),
-	.wb_stb_i(tdc_stb),
-	.wb_we_i(tdc_we),
-	.wb_ack_o(tdc_ack),
-	.wb_irq_o(tdc_irq),
-
-	.cc_rst_i(1'b0),
-	.cc_cy_o(),
-	.signal_i(tdc_signal),
-	.calib_i(tdc_calib)
 );
 
 endmodule
