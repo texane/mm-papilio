@@ -1,7 +1,31 @@
 milkymist papilio port
 
-tdc core cloned from git://ohwr.org/hdl-core-lib/tdc-core.git
-commit 60aaf965932b64551c70cd1aeccd8fa972d477ff
+# installation steps
 
-toolchain downloadable at ftp://rtems.org/pub/rtems/linux/4.11/fedora/15/i386
-extract and install all the packages matching *lm32*
+# tdc core cloned from git://ohwr.org/hdl-core-lib/tdc-core.git
+# commit 60aaf965932b64551c70cd1aeccd8fa972d477ff
+# this version is available in mm-papilio/tdc-core
+
+# install the gcc-lm32 toolchain
+# downloadable at ftp://rtems.org/pub/rtems/linux/4.11/fedora/15/i386
+# extract and install all the packages matching *lm32*
+
+# build mm related tools
+cd mm-papilio/tdc-core/demo/tools
+PATH=/opt/rtems-4.11/bin:$PATH make
+
+# build libbase
+cd mm-papilio/tdc-core/demo/software/libbase
+PATH=/opt/rtems-4.11/bin:$PATH make
+
+# build the bios
+cd mm-papilio/tdc-core/demo/software/bios
+PATH=/opt/rtems-4.11/bin:$PATH make
+
+# build the papilio500k bitstream
+cd mm-papilio/tdc-core/demo/boards/spec/synthesis
+PATH=$PATH:/opt/Xilinx/12.3/ISE_DS/ISE/bin/lin make -f Makefile.xst clean
+PATH=$PATH:/opt/Xilinx/12.3/ISE_DS/ISE/bin/lin make -f Makefile.xst
+
+# upload the bitstream
+sudo $HOME/install/bin/papilioloader -f build/system.bit
