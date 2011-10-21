@@ -309,9 +309,29 @@ static void boot_sequence()
 	}
 }
 
+static inline void delay(void)
+{
+  static volatile unsigned int i;
+  for (i = 0; i < 100000; ++i) ;
+}
+
 int main(int i, char **c)
 {
-	char buffer[64];
+	static char buffer[64];
+	static unsigned int state = 1;
+	static unsigned int mask = GPIO_LED2 | GPIO_LED3;
+	static unsigned int value;
+
+	while (1)
+	{
+	  /* setup gpio as output */
+	  value = CSR_GPIO_OUT;
+	  if (state) value &= ~mask;
+	  else value |= mask;
+	  CSR_GPIO_OUT = value;
+	  state ^= 1;
+	  delay();
+	}
 
 	brd_desc = get_board_desc();
 
