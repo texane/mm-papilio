@@ -309,26 +309,9 @@ static void boot_sequence()
 	}
 }
 
-static inline void delay(void)
-{
-  register unsigned int i;
-  for (i = 0; i < 10000000; ++i)
-    __asm__ __volatile__ ("nop\n\t" ::: "memory");
-}
-
 int main(int i, char **c)
 {
 	char buffer[64];
-
-#if 1
-	while (1)
-	{
-	  CSR_GPIO_OUT = 0x00;
-	  delay();
-	  CSR_GPIO_OUT = 0xff;
-	  delay();
-	}
-#endif
 
 	brd_desc = get_board_desc();
 

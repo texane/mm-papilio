@@ -49,8 +49,8 @@ SECTIONS
 		*(COMMON)
 		_ebss = .;
 		_end = .;
-	} > bram
+	} > sram
 }
 
-PROVIDE(_fstack = ORIGIN(bram) + LENGTH(bram) - 4);
+PROVIDE(_fstack = ORIGIN(sram) + LENGTH(sram) - 4);
 
