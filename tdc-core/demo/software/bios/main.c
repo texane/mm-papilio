@@ -311,8 +311,9 @@ static void boot_sequence()
 
 static inline void delay(void)
 {
-  static volatile unsigned int i;
-  for (i = 0; i < 10000000; ++i) ;
+  register unsigned int i;
+  for (i = 0; i < 10000000; ++i)
+    __asm__ __volatile__ ("nop\n\t" ::: "memory");
 }
 
 int main(int i, char **c)
@@ -320,16 +321,11 @@ int main(int i, char **c)
 	char buffer[64];
 
 #if 1
-	static unsigned int state = 1;
-	static unsigned int value = 0;
-
 	while (1)
 	{
-	  /* setup gpio as output */
-	  if (state) value = 0xff;
-	  else value = 0x00;
-	  CSR_GPIO_OUT = value;
-	  state ^= 1;
+	  CSR_GPIO_OUT = 0x00;
+	  delay();
+	  CSR_GPIO_OUT = 0xff;
 	  delay();
 	}
 #endif
